@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -12,7 +12,15 @@ import {
 
 export default function Home() {
   const router = useRouter();
-  const [balance, setBalance] = useState(150.00);
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      setBalance(parsedUser.balance || 0);
+    }
+  }, []);
 
   return (
     <div className={styles.container}>

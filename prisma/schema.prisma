@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  phone         String   @unique
+  name          String?
+  walletBalance Float    @default(0.0)
+  createdAt     DateTime @default(now())
+  
+  transactions  Transaction[]
+  otps          Otp[]
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  amount    Float
+  type      String   // "DEPOSIT", "WITHDRAWAL", "GAME_WIN", "GAME_LOSS"
+  status    String   // "PENDING", "SUCCESS", "FAILED"
+  gateway   String   // "RAZORPAY", "PAYTM", "SYSTEM"
+  orderId   String?  // Gateway Order ID
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
