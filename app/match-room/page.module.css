@@ -1,0 +1,265 @@
+.matchContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem 80px;
+  background-image: 
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15), transparent 60%),
+    radial-gradient(circle at 20% 80%, rgba(30, 58, 138, 0.15), transparent 60%);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.backBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.headerTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.walletBadge {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+/* Match Setup State */
+.setupCard {
+  text-align: center;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.gameIcon {
+  display: inline-flex;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  border-radius: 24px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.selectionTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.selectionSub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.poolSelector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.poolBtn {
+  background: rgba(15, 16, 22, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.poolBtn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.poolBtnActive {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.entryFee {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.winningPrize {
+  font-size: 0.9rem;
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.findMatchBtn {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+
+/* Searching State */
+.searchingState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.radarContainer {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radarPulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--accent-blue);
+  animation: pulse 2s infinite;
+  opacity: 0;
+}
+
+.radarPulse:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.radarCenter {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-dark);
+  border: 4px solid var(--accent-blue);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.searchingText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.searchingSub {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.cancelBtn {
+  margin-top: 3rem;
+  padding: 12px 32px;
+}
+
+/* Match Found State */
+.vsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border-radius: 24px;
+  background: rgba(15, 16, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.playerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.playerAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 800;
+  border: 4px solid;
+}
+
+.avatarSelf {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.avatarOpp {
+  background: linear-gradient(135deg, #7f1d1d, #ef4444);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.playerName {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.vsBadge {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary-accent);
+  text-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+  font-style: italic;
+}
+
+.matchDetails {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.prizePool {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.prizeLabel {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+}

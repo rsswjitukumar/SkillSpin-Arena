@@ -1,0 +1,212 @@
+.gameContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem 80px;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.15), transparent 60%),
+    radial-gradient(circle at 90% 80%, rgba(131, 24, 67, 0.15), transparent 60%);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.backBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.poolInfo {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+/* Wheel Layout */
+.wheelSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.wheelOuter {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(236, 72, 153, 0.2);
+  position: relative;
+}
+
+.wheelPointer {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 40px;
+  background: var(--accent-gold);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  z-index: 10;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+}
+
+.wheelInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(0,0,0,0.5);
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+/* Pseudo segments for visual representation without complex canvas */
+.segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Colors for segments */
+.s1 { background: var(--primary-accent); transform: rotate(0deg) skewY(30deg); }
+.s2 { background: var(--accent-blue); transform: rotate(60deg) skewY(30deg); }
+.s3 { background: var(--accent-green); transform: rotate(120deg) skewY(30deg); }
+.s4 { background: var(--accent-gold); transform: rotate(180deg) skewY(30deg); }
+.s5 { background: #9333ea; transform: rotate(240deg) skewY(30deg); }
+.s6 { background: var(--accent-red); transform: rotate(300deg) skewY(30deg); }
+
+.segmentContent {
+  position: absolute;
+  transform: skewY(-30deg) rotate(30deg) translate(30px, 40px);
+}
+
+.wheelCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: var(--bg-dark);
+  border-radius: 50%;
+  z-index: 5;
+  border: 3px solid rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  color: white;
+}
+
+/* Controls */
+.controlsPanel {
+  background: rgba(15, 16, 22, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.betLabel {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.betOptions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.betBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.betBtnActive {
+  background: var(--primary-glow);
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 15px rgba(121, 40, 202, 0.4);
+}
+
+.spinBtn {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.winnerOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+}
+
+.winnerText {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+  margin-bottom: 1rem;
+}

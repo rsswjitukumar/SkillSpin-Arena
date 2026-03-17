@@ -1,0 +1,164 @@
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-image: 
+    radial-gradient(circle at top right, rgba(121, 40, 202, 0.2), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(255, 0, 128, 0.2), transparent 40%);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.brandLogo {
+  margin-bottom: 2rem;
+}
+
+.brandLogo h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.authSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 0.5rem;
+}
+
+.inputLabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 4px;
+}
+
+/* Enhancing input relative to globals for icons */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.iconPrefix {
+  position: absolute;
+  left: 16px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.inputWithIcon {
+  padding-left: 48px;
+  background: rgba(15, 16, 22, 0.6);
+}
+
+.inputWithIcon:focus {
+  background: rgba(15, 16, 22, 0.8);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+.socialAuth {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.socialBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.authFooter {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.authLink {
+  color: var(--primary-accent);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.authLink:hover {
+  color: #ff3399;
+  text-decoration: underline;
+}
+
+.backBtn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.backBtn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
