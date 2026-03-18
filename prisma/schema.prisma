@@ -15,6 +15,7 @@ model User {
   name          String?
   role          String   @default("USER")
   walletBalance Float    @default(0.0)
+  totalWinnings Float    @default(0.0)
   createdAt     DateTime @default(now())
   
   transactions  Transaction[]
