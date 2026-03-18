@@ -18,6 +18,10 @@ model User {
   
   transactions  Transaction[]
   otps          Otp[]
+  
+  matchesAsPlayer1 Match[] @relation("Player1Matches")
+  matchesAsPlayer2 Match[] @relation("Player2Matches")
+  matchesWon       Match[] @relation("MatchWinner")
 }
 
 model Otp {
@@ -41,4 +45,22 @@ model Transaction {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Match {
+  id        String   @id @default(cuid())
+  entryFee  Float
+  status    String   // "WAITING", "PLAYING", "FINISHED", "CANCELLED"
+  
+  player1Id String
+  player1   User     @relation("Player1Matches", fields: [player1Id], references: [id])
+  
+  player2Id String?
+  player2   User?    @relation("Player2Matches", fields: [player2Id], references: [id])
+  
+  winnerId  String?
+  winner    User?    @relation("MatchWinner", fields: [winnerId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

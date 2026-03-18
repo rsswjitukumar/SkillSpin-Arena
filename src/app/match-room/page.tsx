@@ -1,18 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { ChevronLeft, Coins, Gamepad2, Search, Zap } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function MatchRoom() {
   const router = useRouter();
-  const [balance, setBalance] = useState(150);
+  const [user, setUser] = useState<any>(null);
+  const [balance, setBalance] = useState(0);
   const [entryFee, setEntryFee] = useState(10);
   
-  // 'setup' | 'searching' | 'found' | 'playing'
+  // 'setup' | 'searching' | 'found'
   const [matchState, setMatchState] = useState<'setup' | 'searching' | 'found'>('setup');
   const [countdown, setCountdown] = useState(3);
+  const [activeMatch, setActiveMatch] = useState<any>(null);
+
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const poolOptions = [
     { entry: 10, win: 18 },
@@ -21,56 +26,148 @@ export default function MatchRoom() {
     { entry: 100, win: 180 },
   ];
 
-  const handleFindMatch = () => {
-    if (balance < entryFee) {
-      alert("Insufficient Balance!");
-      return;
-    }
-    setBalance(prev => prev - entryFee);
+  // 1. Fetch secure balance
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/user/profile');
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          setBalance(data.user.walletBalance);
+        } else {
+          router.push('/login');
+        }
+      } catch (e) {
+        toast.error('Failed to load profile');
+      }
+    };
+    fetchProfile();
+  }, [router]);
+
+  // 2. Handle Joining Match
+  const handleFindMatch = async () => {
+    if (balance < entryFee) return toast.error("Insufficient Wallet Balance! Please add cash.");
+    
     setMatchState('searching');
+    try {
+      const res = await fetch('/api/matchmaking/join', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entryFee })
+      });
+      const data = await res.json();
+      
+      if (!data.success) {
+        toast.error(data.error || 'Failed to find match');
+        setMatchState('setup');
+        return;
+      }
+
+      setActiveMatch(data.match);
+      setBalance(prev => prev - entryFee); // Optimistic UI deduct
+
+      if (data.match.status === 'PLAYING') {
+        // Found an opponent instantly
+        setMatchState('found');
+      } else {
+        // Waiting for opponent - Start polling
+        startPolling(data.match.id);
+      }
+    } catch (err) {
+      toast.error('Network Error');
+      setMatchState('setup');
+    }
   };
 
-  useEffect(() => {
-    let searchTimer: NodeJS.Timeout;
-    let startTimer: NodeJS.Timeout;
+  // 3. Polling Logic
+  const startPolling = (matchId: string) => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch('/api/matchmaking/status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ matchId })
+        });
+        const data = await res.json();
+        
+        if (data.success && data.match.status === 'PLAYING') {
+          setActiveMatch(data.match);
+          setMatchState('found');
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        }
+      } catch (e) {
+        console.error("Polling error");
+      }
+    }, 2000); // Poll every 2 seconds
+  };
 
-    if (matchState === 'searching') {
-      // Simulate finding a match after 3-5 seconds
-      const simulatedWait = Math.floor(Math.random() * 2000) + 2000;
-      searchTimer = setTimeout(() => {
-        setMatchState('found');
-      }, simulatedWait);
+  // 4. Cancel Search
+  const handleCancelSearch = async () => {
+    if (!activeMatch) {
+      setMatchState('setup');
+      return;
     }
+    
+    try {
+      const res = await fetch('/api/matchmaking/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ matchId: activeMatch.id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Search cancelled, entry fee refunded.');
+        setBalance(prev => prev + activeMatch.entryFee); // Refund locally
+        setMatchState('setup');
+        setActiveMatch(null);
+        if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+      } else {
+        toast.error(data.error || 'Cannot cancel match');
+      }
+    } catch (e) {
+      toast.error('Network error');
+    }
+  };
+
+  // 5. Found Countdown
+  useEffect(() => {
+    let startTimer: NodeJS.Timeout;
 
     if (matchState === 'found') {
       startTimer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(startTimer);
-            alert("Game starts now! (Redirecting to Ludo Engine...)");
-            router.push('/'); 
+            toast.success("Game starts now! (Redirecting to Engine...)");
+            router.push('/'); // Or your Ludo engine route
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
     }
-
-    return () => {
-      clearTimeout(searchTimer);
-      clearInterval(startTimer);
-    };
+    return () => clearInterval(startTimer);
   }, [matchState, router]);
+
+  // Clean up
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
+  const amIPlayer1 = activeMatch?.player1Id === user?.id;
 
   return (
     <div className={styles.matchContainer}>
-      
-      {/* Header */}
       <div className={styles.header}>
         <button 
           onClick={() => {
             if (matchState === 'setup') router.push('/');
-            else setMatchState('setup');
+            else if (matchState === 'searching') handleCancelSearch();
           }} 
           className={styles.backBtn}
         >
@@ -78,7 +175,7 @@ export default function MatchRoom() {
         </button>
         <div className={styles.headerTitle}>Skill Ludo 1v1</div>
         <div className={styles.walletBadge}>
-          <Coins size={16} /> ₹{balance}
+          <Coins size={16} /> ₹{balance.toFixed(2)}
         </div>
       </div>
 
@@ -121,16 +218,11 @@ export default function MatchRoom() {
               <Search size={32} color="white" />
             </div>
           </div>
-          
           <h2 className={styles.searchingText}>Finding Opponent...</h2>
-          <p className={styles.searchingSub}>Searching for players near your skill level</p>
-
+          <p className={styles.searchingSub}>Searching for players matching your entry fee of ₹{entryFee}</p>
           <button 
             className={`btn btn-outline ${styles.cancelBtn}`}
-            onClick={() => {
-              setMatchState('setup');
-              setBalance(prev => prev + entryFee); // Refund on cancel
-            }}
+            onClick={handleCancelSearch}
           >
             Cancel Search
           </button>
@@ -139,25 +231,24 @@ export default function MatchRoom() {
 
       {matchState === 'found' && (
         <div className={styles.searchingState} style={{ justifyContent: 'flex-start', paddingTop: '2rem' }}>
-          
           <h2 className={styles.searchingText} style={{ marginBottom: '2rem', color: 'var(--accent-green)' }}>
             Match Found!
           </h2>
 
           <div className={styles.vsContainer} style={{ width: '100%' }}>
-            
             <div className={styles.playerCard}>
               <div className={`${styles.playerAvatar} ${styles.avatarSelf}`}>You</div>
-              <div className={styles.playerName}>You</div>
+              <div className={styles.playerName}>{user?.username || 'You'}</div>
             </div>
 
             <div className={styles.vsBadge}>VS</div>
 
             <div className={styles.playerCard}>
               <div className={`${styles.playerAvatar} ${styles.avatarOpp}`}>P2</div>
-              <div className={styles.playerName}>Opponent</div>
+              <div className={styles.playerName}>
+                {!amIPlayer1 ? activeMatch?.player1?.username : activeMatch?.player2?.username || 'Opponent'}
+              </div>
             </div>
-
           </div>
 
           <div className={styles.matchDetails}>
@@ -165,15 +256,12 @@ export default function MatchRoom() {
             <div className={styles.prizePool}>
               ₹{poolOptions.find(p => p.entry === entryFee)?.win}
             </div>
-            
             <div style={{ marginTop: '2rem', fontSize: '1.2rem', color: 'var(--text-secondary)' }}>
               Game starting in... <span style={{ fontSize: '2rem', color: 'white', fontWeight: 'bold' }}>{countdown}</span>
             </div>
           </div>
-
         </div>
       )}
-
     </div>
   );
 }
