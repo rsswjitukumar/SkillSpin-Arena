@@ -3,7 +3,17 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { phone, code } = await request.json();
+    let body;
+    try {
+      const contentLength = request.headers.get('content-length');
+      if (contentLength === '0') {
+        return NextResponse.json({ error: 'Request body cannot be empty' }, { status: 400 });
+      }
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
+    }
+    const { phone, code } = body;
 
     if (!phone || !code) {
       return NextResponse.json({ error: 'Phone and OTP are required' }, { status: 400 });
@@ -44,7 +54,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // 4. Return Session Data (In a real app, set an HTTP-only cookie JWT here)
+    // 4. Return Session Data
     return NextResponse.json({ 
       success: true, 
       user: {

@@ -3,7 +3,18 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { phone } = await request.json();
+    let body;
+    try {
+      // Check if the request body is empty before attempting to parse JSON
+      const contentLength = request.headers.get('content-length');
+      if (contentLength === '0') {
+        return NextResponse.json({ error: 'Request body cannot be empty' }, { status: 400 });
+      }
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
+    }
+    const { phone } = body;
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
