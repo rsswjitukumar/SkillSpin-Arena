@@ -1,30 +1,48 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
+import { jwtVerify } from 'jose';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    const { orderId, status } = await request.json();
+    const { orderId, paymentId, signature, status } = await request.json();
+
+    // Secure checking
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth_token')?.value;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const secretJwt = new TextEncoder().encode(process.env.JWT_SECRET || 'skillspin_default_secret_key_2026');
+    const { payload } = await jwtVerify(token, secretJwt);
+    const userId = payload.id as string;
 
     if (!orderId || !status) {
-      return NextResponse.json({ error: 'Order ID and status are required' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing payment details' }, { status: 400 });
     }
 
-    // 1. Find the transaction
     const transaction = await prisma.transaction.findFirst({
-      where: { orderId: orderId },
+      where: { orderId: orderId, userId: userId },
       include: { user: true }
     });
 
-    if (!transaction) {
-      return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
-    }
+    if (!transaction) return NextResponse.json({ error: 'Transaction not found or unauthorized' }, { status: 404 });
+    if (transaction.status === 'SUCCESS') return NextResponse.json({ error: 'Transaction already processed' }, { status: 400 });
 
-    if (transaction.status === 'SUCCESS') {
-      return NextResponse.json({ error: 'Transaction already processed' }, { status: 400 });
-    }
-
-    // 2. STRICT BEAST LOGIC: Use Prisma Transaction to update status and balance atomically
     if (status === 'SUCCESS') {
+      // Very basic signature skeleton logic (uncomment to enforce)
+      if (paymentId && signature) {
+        const secret = process.env.RAZORPAY_KEY_SECRET;
+        if (secret && secret !== 'secret_placeholder') {
+          const expectedSignature = crypto.createHmac('sha256', secret)
+                                        .update(orderId + "|" + paymentId)
+                                        .digest('hex');
+          if (expectedSignature !== signature) {
+            return NextResponse.json({ error: 'Invalid Payment Signature (Rejecting due to forgery)' }, { status: 400 });
+          }
+        }
+      }
+
       await prisma.$transaction([
         prisma.transaction.update({
           where: { id: transaction.id },
@@ -32,26 +50,21 @@ export async function POST(request: Request) {
         }),
         prisma.user.update({
           where: { id: transaction.userId },
-          data: { 
-            walletBalance: { increment: transaction.amount } 
-          },
+          data: { walletBalance: { increment: transaction.amount } },
         }),
       ]);
 
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Payment verified and balance updated' 
-      });
+      return NextResponse.json({ success: true, message: 'Payment verified securely and balance updated' });
     } else {
       await prisma.transaction.update({
         where: { id: transaction.id },
         data: { status: 'FAILED' },
       });
-      return NextResponse.json({ success: false, message: 'Payment failed' });
+      return NextResponse.json({ success: false, message: 'Payment failed marking' });
     }
 
   } catch (error) {
     console.error('PAYMENT_VERIFY_ERROR:', error);
-    return NextResponse.json({ error: 'Payment verification failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
   }
 }

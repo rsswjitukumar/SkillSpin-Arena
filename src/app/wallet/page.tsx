@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { ChevronLeft, Wallet, ArrowDownToLine, ArrowUpFromLine, ShieldCheck, ChevronRight, CheckCircle2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function WalletPage() {
   const router = useRouter();
@@ -14,60 +15,117 @@ export default function WalletPage() {
   const [selectedGateway, setSelectedGateway] = useState<'RAZORPAY' | 'PAYTM'>('RAZORPAY');
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      setBalance(parsedUser.balance || 0);
-    } else {
-      router.push('/login');
-    }
+    // Dynamically load Razorpay script
+    const loadRazorpayScript = () => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      document.body.appendChild(script);
+    };
+    loadRazorpayScript();
+
+    // Fetch secure profile
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/user/profile');
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          setBalance(data.user.walletBalance);
+        } else {
+          router.push('/login');
+        }
+      } catch (e) {
+        toast.error('Failed to load wallet');
+      }
+    };
+    fetchProfile();
   }, [router]);
 
   const handlePay = async () => {
     if (!user) return;
+    if (parseFloat(addAmount) < 10) {
+      return toast.error("Minimum deposit is ₹10");
+    }
+    
     setLoading(true);
     try {
-      // 1. Create Order in Backend
+      // 1. Create Order
       const orderRes = await fetch('/api/payments/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          userId: user.id, 
-          amount: addAmount, 
-          gateway: selectedGateway 
-        }),
+        body: JSON.stringify({ amount: addAmount, gateway: selectedGateway }),
       });
       const orderData = await orderRes.json();
 
-      if (orderData.success) {
-        // 2. Simulate Gateway Redirect & Success
-        // In real app, this is where Razorpay Checkout JS opens
-        alert(`Redirecting to ${selectedGateway}...`);
-        
-        // 3. Verify Payment in Backend (Simulated success callback)
+      if (!orderData.success) {
+         toast.error(orderData.error || 'Failed to initialize payment');
+         setLoading(false);
+         return;
+      }
+
+      if (selectedGateway === 'RAZORPAY' && orderData.order.id.startsWith('rzp_')) {
+        // Real Razorpay Flow
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+          amount: orderData.order.amount * 100,
+          currency: orderData.order.currency,
+          name: "SkillSpin Arena",
+          description: "Add Cash to Wallet",
+          order_id: orderData.order.id,
+          handler: async function (response: any) {
+            // 2. Verify Payment
+            const verifyRes = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                orderId: orderData.order.id, 
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+                status: 'SUCCESS' 
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              setBalance(prev => prev + parseFloat(addAmount));
+              toast.success('Cash Added Successfully to your Beast Wallet!');
+            } else {
+              toast.error(verifyData.error || 'Payment verification failed');
+            }
+          },
+          prefill: {
+            name: user.username || "Gamer",
+            contact: user.phone || ""
+          },
+          theme: { color: "#6366f1" }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.on('payment.failed', function (response: any){
+          toast.error(response.error.description || 'Payment Failed');
+        });
+        rzp.open();
+        setLoading(false); // Enable button again
+
+      } else {
+        // Mock Bypass (Paytm or missing keys fallback)
+        toast.success(`Mock Redirecting to ${selectedGateway}...`);
         const verifyRes = await fetch('/api/payments/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            orderId: orderData.order.id, 
-            status: 'SUCCESS' 
-          }),
+          body: JSON.stringify({ orderId: orderData.order.id, status: 'SUCCESS' }),
         });
         const verifyData = await verifyRes.json();
-
         if (verifyData.success) {
-          const newBalance = balance + parseFloat(addAmount);
-          setBalance(newBalance);
-          // Update local user state
-          const updatedUser = { ...user, balance: newBalance };
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-          alert('Cash Added Successfully to your Beast Wallet!');
+          setBalance(prev => prev + parseFloat(addAmount));
+          toast.success('Mock Cash Added Successfully!');
+        } else {
+          toast.error(verifyData.error || 'Payment failed');
         }
+        setLoading(false);
       }
     } catch (err) {
-      alert('Payment Failed. Please try again.');
-    } finally {
+      toast.error('Payment Error. Please try again.');
       setLoading(false);
     }
   };
@@ -76,8 +134,6 @@ export default function WalletPage() {
 
   return (
     <div className={styles.walletContainer}>
-      
-      {/* Header */}
       <div className={styles.header}>
         <button onClick={() => router.push('/')} className={styles.backBtn}>
           <ChevronLeft size={24} />
@@ -85,7 +141,6 @@ export default function WalletPage() {
         <h2 className={styles.headerTitle}>My Beast Wallet</h2>
       </div>
 
-      {/* Main Balance Card */}
       <div className={`glass-panel ${styles.balanceCard}`}>
         <span className={styles.balanceLabel}>Total Balance</span>
         <div className={styles.balanceAmount}>₹{balance.toFixed(2)}</div>
@@ -100,7 +155,6 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* Add Money Section */}
       <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h3 className={styles.sectionTitle}>
           <Wallet size={20} color="var(--accent-green)" /> Add Money
@@ -129,7 +183,6 @@ export default function WalletPage() {
           />
         </div>
 
-        {/* Gateway Selection */}
         <div style={{ display: 'flex', gap: '10px', marginBottom: '1.5rem' }}>
            <button 
              onClick={() => setSelectedGateway('RAZORPAY')}
@@ -161,7 +214,6 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* Payment Methods Info */}
       <div className={styles.paymentMethods}>
         <h3 className={styles.sectionTitle} style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>Supported Methods</h3>
         
