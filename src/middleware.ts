@@ -11,7 +11,15 @@ export async function middleware(request: NextRequest) {
 
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'skillspin_default_secret_key_2026');
-    await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, secret);
+    
+    // Check Admin rights
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+      if (payload.role !== 'ADMIN') {
+        return NextResponse.redirect(new URL('/', request.url)); // Kick back to dashboard if not admin
+      }
+    }
+
     return NextResponse.next();
   } catch (err) {
     // If token is invalid or expired
@@ -22,5 +30,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/wallet/:path*', '/match-room/:path*'],
+  matcher: ['/wallet/:path*', '/match-room/:path*', '/admin/:path*'],
 };

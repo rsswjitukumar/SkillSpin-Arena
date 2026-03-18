@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
     // Generate JWT & Set Cookie
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'skillspin_default_secret_key_2026');
-    const token = await new SignJWT({ id: user.id, phone: user.phone, username: user.username })
+    const token = await new SignJWT({ id: user.id, phone: user.phone, username: user.username, role: user.role })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('7d')
