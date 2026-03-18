@@ -1,66 +1,190 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import styles from './page.module.css';
+import { 
+  Wallet, Trophy, Users, UserCircle, 
+  Gamepad2, Coins, Play, Loader, 
+  Target, Home as HomeIcon, Gift
+} from 'lucide-react';
 
 export default function Home() {
+  const router = useRouter();
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      setBalance(parsedUser.balance || 0);
+    }
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className={styles.container}>
+      {/* Header / Navbar */}
+      <header className={styles.header}>
+        <div className={styles.logo}>
+          <h1><span className="text-gradient">SkillSpin</span> Arena</h1>
+        </div>
+        
+        <div className={styles.walletCard}>
+          <Wallet size={16} color="var(--accent-gold)" />
+          <div className={styles.walletDetails}>
+            <span className={styles.walletLabel}>Balance</span>
+            <span className={styles.walletAmount}>₹{balance.toFixed(2)}</span>
+          </div>
+          <button onClick={() => router.push('/wallet')} className={`btn btn-success ${styles.addBtn}`}>+ Add</button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h2 className={styles.heroTitle}>
+            Play & <span className="text-gradient-gold">Win Real Cash</span> Every Minute!
+          </h2>
+          <p className={styles.heroSubtitle}>
+            Join India's #1 Skill Gaming Platform. Instant Withdrawals via UPI.
           </p>
+          <div className={styles.actionGroup}>
+            <button className="btn btn-primary animate-pulse-glow" style={{ gap: '8px' }}>
+              <Gamepad2 size={20} /> Play Now - ₹10 Entry
+            </button>
+            <button className="btn btn-outline" style={{ gap: '8px' }}>
+              <Users size={20} /> Refer & Earn ₹50
+            </button>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        
+        {/* Decorative Floating Element */}
+        <div className={`${styles.heroImage} animate-float`}>
+          <div className={styles.spinningCoin}>
+            <div className={styles.coinInner}>₹</div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Game Selection Grid */}
+      <section className={styles.gamesSection}>
+        <div className={styles.sectionHeader}>
+          <h3>Trending Games</h3>
+          <button className={styles.textBtn}>View All</button>
+        </div>
+        
+        <div className="grid-cards">
+          {/* Game Card 1 */}
+          <div className="glass-panel">
+            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #1e3a8a, #3b82f6)'}}>
+              <span className={styles.gameBadge}>Hot</span>
+            </div>
+            <div className={styles.gameInfo}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Gamepad2 size={20} color="var(--accent-blue)" /> Skill Ludo (1v1)
+              </h4>
+              <p>Fast-paced 5-minute ludo.</p>
+              
+              <div className={styles.matchStats}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Trophy size={14} color="var(--accent-gold)" /> Win: ₹18.00
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Coins size={14} /> Entry: ₹10.00
+                </span>
+              </div>
+              
+              <button 
+                onClick={() => router.push('/match-room')}
+                className="btn btn-primary" 
+                style={{width: '100%', marginTop: '16px', gap: '8px'}}
+              >
+                <Play size={18} fill="currentColor" /> Play Ludo
+              </button>
+            </div>
+          </div>
+
+          {/* Game Card 2 */}
+          <div className="glass-panel">
+            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #831843, #ec4899)'}}>
+              <span className={styles.gameBadge}>New</span>
+            </div>
+            <div className={styles.gameInfo}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Loader size={20} color="var(--primary-accent)" /> Spin Wheel Turbo
+              </h4>
+              <p>Test your luck & timing.</p>
+              
+              <div className={styles.matchStats}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Trophy size={14} color="var(--accent-gold)" /> Win: Upto ₹50
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Coins size={14} /> Entry: ₹5.00
+                </span>
+              </div>
+              
+              <button 
+                onClick={() => router.push('/spin')}
+                className="btn btn-primary" 
+                style={{width: '100%', marginTop: '16px', gap: '8px'}}
+              >
+                <Loader size={18} /> Spin Now
+              </button>
+            </div>
+          </div>
+
+          {/* Game Card 3 */}
+          <div className="glass-panel">
+            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #064e3b, #10b981)'}}>
+            </div>
+            <div className={styles.gameInfo}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Target size={20} color="var(--accent-green)" /> Target Tap
+              </h4>
+              <p>30 seconds reaction battle.</p>
+              
+              <div className={styles.matchStats}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Trophy size={14} color="var(--accent-gold)" /> Win: ₹4.50
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Coins size={14} /> Entry: ₹2.50
+                </span>
+              </div>
+              
+              <button className="btn btn-outline" style={{width: '100%', marginTop: '16px', gap: '8px'}}>
+                <Target size={18} /> Play Tap
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom Navigation */}
+      <nav className={styles.bottomNav}>
+        <div className={`${styles.navItem} ${styles.navActive}`}>
+          <HomeIcon className={styles.navIcon} size={24} />
+          <span>Home</span>
+        </div>
+        <Link href="/leaderboard" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          <div className={styles.navItem}>
+            <Trophy className={styles.navIcon} size={24} />
+            <span>Contests</span>
+          </div>
+        </Link>
+        <div className={styles.navItem}>
+          <Gift className={styles.navIcon} size={24} />
+          <span>Refer</span>
+        </div>
+        <Link href="/login" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          <div className={styles.navItem}>
+            <UserCircle className={styles.navIcon} size={24} />
+            <span>Profile</span>
+          </div>
+        </Link>
+      </nav>
     </div>
   );
 }
