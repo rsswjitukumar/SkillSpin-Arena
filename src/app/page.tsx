@@ -195,10 +195,12 @@ export default function Home() {
             <span>Contests</span>
           </div>
         </Link>
-        <div className={styles.navItem}>
-          <Gift className={styles.navIcon} size={24} />
-          <span>Refer</span>
-        </div>
+        <Link href="/refer" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          <div className={styles.navItem}>
+            <Gift className={styles.navIcon} size={24} />
+            <span>Refer</span>
+          </div>
+        </Link>
         <Link href="/profile" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className={styles.navItem}>
             <UserCircle className={styles.navIcon} size={24} />

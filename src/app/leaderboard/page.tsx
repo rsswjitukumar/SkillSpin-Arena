@@ -123,10 +123,12 @@ export default function LeaderboardPage() {
           <Trophy size={24} style={{ filter: 'grayscale(0)', opacity: 1, transform: 'translateY(-2px)' }} />
           <span>Contests</span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
-          <Gift size={24} style={{ filter: 'grayscale(1)', opacity: 0.6 }} />
-          <span>Refer</span>
-        </div>
+        <Link href="/refer" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
+            <Gift size={24} style={{ filter: 'grayscale(1)', opacity: 0.6 }} />
+            <span>Refer</span>
+          </div>
+        </Link>
         <Link href="/profile" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
             <UserCircle size={24} style={{ filter: 'grayscale(1)', opacity: 0.6 }} />

@@ -83,7 +83,7 @@ export default function ProfilePage() {
 
       {/* Menu Options */}
       <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-         <div className="glass-panel" style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+         <div className="glass-panel" onClick={() => router.push('/refer')} style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
              <Gift color="var(--primary-accent)" size={20} />
              <span>Refer & Earn</span>
@@ -113,10 +113,12 @@ export default function ProfilePage() {
             <span>Contests</span>
           </div>
         </Link>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
-          <Gift size={24} style={{ filter: 'grayscale(1)', opacity: 0.6 }} />
-          <span>Refer</span>
-        </div>
+        <Link href="/refer" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
+            <Gift size={24} style={{ filter: 'grayscale(1)', opacity: 0.6 }} />
+            <span>Refer</span>
+          </div>
+        </Link>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--primary-accent)', fontSize: '0.75rem', fontWeight: 600 }}>
           <UserCircle size={24} style={{ filter: 'grayscale(0)', opacity: 1, transform: 'translateY(-2px)' }} />
           <span>Profile</span>
