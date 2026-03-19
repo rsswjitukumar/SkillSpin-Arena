@@ -60,7 +60,17 @@ export async function POST(request: Request) {
           data: {
             player2Id: userId,
             status: 'PLAYING',
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            gameState: JSON.stringify({
+              currentTurn: waitingMatch.player1Id, // Player 1 starts
+              player1Score: 0,
+              player2Score: 0,
+              player1Tokens: [0, 0, 0, 0],
+              player2Tokens: [0, 0, 0, 0],
+              diceValue: null,
+              winnerId: null,
+              message: "Game started! Player 1's turn to roll."
+            })
           },
           include: { player1: { select: { username: true, name: true } } }
         });

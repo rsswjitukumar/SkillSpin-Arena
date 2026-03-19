@@ -142,7 +142,11 @@ export default function MatchRoom() {
           if (prev <= 1) {
             clearInterval(startTimer);
             toast.success("Game starts now! (Redirecting to Engine...)");
-            router.push('/'); // Or your Ludo engine route
+            if (activeMatch?.id) {
+              router.push(`/game/ludo/${activeMatch.id}`);
+            } else {
+              router.push('/');
+            }
             return 0;
           }
           return prev - 1;
