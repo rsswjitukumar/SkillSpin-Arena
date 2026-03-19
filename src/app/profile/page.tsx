@@ -90,7 +90,7 @@ export default function ProfilePage() {
            </div>
            <ChevronRight size={20} color="var(--text-secondary)" />
          </div>
-         <div className="glass-panel" onClick={() => router.push('/wallet')} style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+         <div className="glass-panel" onClick={() => router.push('/transactions')} style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
              <Wallet color="var(--accent-gold)" size={20} />
              <span>Transaction History</span>
