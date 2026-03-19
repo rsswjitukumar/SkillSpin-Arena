@@ -18,12 +18,12 @@ export async function POST(request: Request) {
     const { payload } = await jwtVerify(token, secret);
     const userId = payload.id as string;
 
-    return await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
-      if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      if (!user) throw new Error('User not found');
 
       if (user.walletBalance < betAmount) {
-        return NextResponse.json({ error: 'Insufficient wallet balance' }, { status: 400 });
+        throw new Error('Insufficient wallet balance');
       }
 
       // 1. Calculate Weighted Probability
@@ -56,20 +56,26 @@ export async function POST(request: Request) {
           userId,
           amount: Math.abs(profitAdjustment),
           type: profitAdjustment >= 0 ? 'SPIN_WIN' : 'SPIN_LOSS',
-          status: 'SUCCESS'
+          status: 'SUCCESS',
+          gateway: 'SYSTEM'
         }
       });
 
-      return NextResponse.json({
+      return {
         success: true,
         multiplierIndex,
         multiplier,
         winAmount,
         newBalance: updatedUser.walletBalance
-      });
+      };
     });
 
-  } catch (error) {
+    return NextResponse.json(result);
+
+  } catch (error: any) {
+    if (error.message === 'User not found' || error.message === 'Insufficient wallet balance') {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error('SPIN_PLAY_ERROR:', error);
     return NextResponse.json({ error: 'Failed to process spin' }, { status: 500 });
   }

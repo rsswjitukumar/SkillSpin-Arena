@@ -68,7 +68,7 @@ export default function Home() {
             Play & <span className="text-gradient-gold">Win Real Cash</span> Every Minute!
           </h2>
           <p className={styles.heroSubtitle}>
-            Join India's #1 Skill Gaming Platform. Instant Withdrawals via UPI.
+            Join India&apos;s #1 Skill Gaming Platform. Instant Withdrawals via UPI.
           </p>
           <div className={styles.actionGroup}>
             <button className="btn btn-primary animate-pulse-glow" style={{ gap: '8px' }}>
