@@ -147,7 +147,7 @@ export default function Home() {
               </div>
               
               <button 
-                onClick={() => router.push('/spin')}
+                onClick={() => router.push('/game/spin')}
                 className="btn btn-primary" 
                 style={{width: '100%', marginTop: '16px', gap: '8px'}}
               >
@@ -175,7 +175,11 @@ export default function Home() {
                 </span>
               </div>
               
-              <button className="btn btn-outline" style={{width: '100%', marginTop: '16px', gap: '8px'}}>
+              <button 
+                onClick={() => router.push('/game/target')}
+                className="btn btn-outline" 
+                style={{width: '100%', marginTop: '16px', gap: '8px'}}
+              >
                 <Target size={18} /> Play Tap
               </button>
             </div>
