@@ -22,8 +22,8 @@ export async function POST(request: Request) {
     // Unique Alphanumeric Referral Code Generator
     const generateReferralCode = () => {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I, O, 0, 1 for clarity
-      let code = 'SKL-';
-      for (let i = 0; i < 4; i++) {
+      let code = 'SKL';
+      for (let i = 0; i < 5; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
       }
       return code;
