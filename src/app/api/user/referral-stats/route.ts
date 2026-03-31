@@ -36,13 +36,6 @@ export async function GET(request: Request) {
       });
       currentCode = updated.referralCode!;
     }
-      
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { referralCode: code }
-      });
-      currentCode = code;
-    }
 
     return NextResponse.json({ 
       success: true, 
