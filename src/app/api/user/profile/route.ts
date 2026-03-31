@@ -31,18 +31,30 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Auto-generate referralCode for existing users if missing
-    let finalUser = { ...user };
-    if (!user.referralCode) {
+    // Ensure the referralCode is strictly dash-free and alphanumeric
+    let currentCode = user.referralCode;
+    let needsUpdate = false;
+
+    if (!currentCode) {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let code = 'SKL';
       for (let i = 0; i < 5; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
       }
-      
+      currentCode = code;
+      needsUpdate = true;
+    } else if (currentCode.includes('-')) {
+      // Surgically remove the dash from existing ID
+      currentCode = currentCode.replace(/-/g, '');
+      needsUpdate = true;
+    }
+
+    let finalUser = { ...user, referralCode: currentCode };
+
+    if (needsUpdate) {
       const updatedUser = await prisma.user.update({
         where: { id: userId },
-        data: { referralCode: code },
+        data: { referralCode: currentCode },
         select: {
           id: true,
           username: true,

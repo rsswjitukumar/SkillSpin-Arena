@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    // Auto-generate referralCode for existing users if missing
+    // Force generate referralCode for existing users if missing
     let currentCode = user.referralCode;
     if (!currentCode) {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -29,6 +29,13 @@ export async function GET(request: Request) {
       for (let i = 0; i < 5; i++) {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
       }
+      
+      const updated = await prisma.user.update({
+        where: { id: user.id },
+        data: { referralCode: code }
+      });
+      currentCode = updated.referralCode!;
+    }
       
       await prisma.user.update({
         where: { id: user.id },

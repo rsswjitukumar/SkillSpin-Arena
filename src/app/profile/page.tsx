@@ -127,10 +127,12 @@ export default function ProfilePage() {
           flexDirection: 'column', alignItems: 'center', gap: '8px'
         }}>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px' }}>My Unique Referral Code</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary-accent)', letterSpacing: '2px' }}>{displayCode}</div>
+          <div style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary-accent)', letterSpacing: '2px' }}>{user?.referralCode}</div>
           <button onClick={() => {
-            navigator.clipboard.writeText(displayCode);
-            toast.success('Referral code copied!');
+            if (user?.referralCode) {
+              navigator.clipboard.writeText(user.referralCode);
+              toast.success('Referral code copied!');
+            }
           }} style={{ 
             background: 'none', border: 'none', color: 'var(--text-secondary)', 
             fontSize: '0.8rem', cursor: 'pointer', display: 'flex', 
