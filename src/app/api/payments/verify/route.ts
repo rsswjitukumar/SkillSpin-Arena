@@ -54,6 +54,48 @@ export async function POST(request: Request) {
         }),
       ]);
 
+      // Check if this is the user's FIRST successful deposit to give extra referral bonus
+      const previousSuccessfulDeposits = await prisma.transaction.count({
+        where: {
+          userId: transaction.userId,
+          status: 'SUCCESS',
+          type: 'DEPOSIT' // Assume transaction types like DEPOSIT exist
+        }
+      });
+
+      // If it's the first success (previousCount was 0 before this update, now 1), check for referrer
+      if (previousSuccessfulDeposits === 1 && transaction.user.referredBy) {
+        const referrer = await prisma.user.findFirst({
+          where: { 
+            OR: [
+              { referralCode: transaction.user.referredBy },
+              { username: transaction.user.referredBy }
+            ]
+          }
+        });
+
+        if (referrer) {
+          await prisma.$transaction([
+            prisma.user.update({
+              where: { id: referrer.id },
+              data: {
+                walletBalance: { increment: 10 },
+                referralEarnings: { increment: 10 }
+              }
+            }),
+            prisma.transaction.create({
+              data: {
+                userId: referrer.id,
+                amount: 10,
+                type: 'REFERRAL_BONUS',
+                status: 'SUCCESS',
+                gateway: 'SYSTEM'
+              }
+            })
+          ]);
+        }
+      }
+
       return NextResponse.json({ success: true, message: 'Payment verified securely and balance updated' });
     } else {
       await prisma.transaction.update({

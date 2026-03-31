@@ -67,14 +67,14 @@ export async function POST(request: Request) {
         prisma.user.update({
           where: { id: validReferrer.id },
           data: {
-            walletBalance: { increment: 100 },
-            referralEarnings: { increment: 100 }
+            walletBalance: { increment: 10 },
+            referralEarnings: { increment: 10 }
           }
         }),
         prisma.transaction.create({
           data: {
             userId: validReferrer.id,
-            amount: 100,
+            amount: 10,
             type: 'REFERRAL_BONUS',
             status: 'SUCCESS',
             gateway: 'SYSTEM'

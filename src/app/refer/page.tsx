@@ -71,9 +71,9 @@ export default function ReferPage() {
           <Gift size={40} color="white" />
           <Sparkles size={20} color="var(--accent-gold)" style={{ position: 'absolute', top: '-10px', right: '-10px' }} />
         </div>
-        <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Get <span className="text-gradient">₹100 Cash</span></h1>
+        <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Get <span className="text-gradient">₹20 Rewards</span></h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: '1.5' }}>
-          Invite your friends to SkillSpin Arena. When they register using your link, you instantly get ₹100 in your wallet, and they get ₹50 bonus!
+          Invite your friends to SkillSpin Arena. When they register using your link, you instantly get ₹10, and you get another ₹10 when they make their first recharge!
         </p>
       </div>
 
