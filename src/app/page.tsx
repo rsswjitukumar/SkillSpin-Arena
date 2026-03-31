@@ -12,6 +12,8 @@ import {
 import toast from 'react-hot-toast';
 
 export default function Home() {
+  // Production Revert Trigger: Stable Version Recovery (v1.0.1)
+
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [balance, setBalance] = useState(0);
