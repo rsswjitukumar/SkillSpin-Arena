@@ -101,7 +101,7 @@ export default function Home() {
           {/* Game Card 1 */}
           <div className="glass-panel">
             <div className={styles.gameBanner} style={{
-              backgroundImage: 'url("/ludo_banner.png")',
+              backgroundImage: 'url("https://images.unsplash.com/photo-1590121338659-68b846e7f973?q=80&w=800&auto=format&fit=crop")',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}>
@@ -135,7 +135,7 @@ export default function Home() {
           {/* Game Card 2 */}
           <div className="glass-panel">
             <div className={styles.gameBanner} style={{
-              backgroundImage: 'url("/spin_banner.png")',
+              backgroundImage: 'url("https://images.unsplash.com/photo-1596838132731-dd960a519656?q=80&w=800&auto=format&fit=crop")',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}>
@@ -169,7 +169,7 @@ export default function Home() {
           {/* Game Card 3 */}
           <div className="glass-panel">
             <div className={styles.gameBanner} style={{
-              backgroundImage: 'url("/target_banner.png")',
+              backgroundImage: 'url("https://images.unsplash.com/photo-1514316703755-d4205de5d702?q=80&w=800&auto=format&fit=crop")',
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}>
