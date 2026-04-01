@@ -6,8 +6,8 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { 
   Wallet, Trophy, Users, UserCircle, 
-  Gamepad2, Coins, Play, Loader, 
-  Target, Home as HomeIcon, Gift
+  Gamepad2, Coins, Play as PlayIcon, Loader, 
+  Target, Home as HomeIcon, Gift, Waves
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -134,7 +134,7 @@ export default function Home() {
                   boxShadow: '0 0 20px rgba(124, 58, 237, 0.3)'
                 }}
               >
-                <Play size={18} fill="currentColor" /> PLAY LUDO
+                <PlayIcon size={18} fill="currentColor" /> PLAY LUDO
               </button>
             </div>
           </div>
@@ -217,7 +217,52 @@ export default function Home() {
                 className="btn btn-outline" 
                 style={{width: '100%', marginTop: '16px', gap: '8px'}}
               >
-                <Target size={18} /> Play Tap
+                <PlayIcon size={18} /> PLAY TAP
+              </button>
+            </div>
+          </div>
+
+          {/* Game Card 4 */}
+          <div className="glass-panel">
+            <div className={styles.gameBanner}>
+              <img 
+                src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop" 
+                alt="Undersea Hit"
+                className={styles.bannerImage}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=800&auto=format&fit=crop';
+                }}
+              />
+              <span className={styles.gameBadge}>Reward x2</span>
+            </div>
+            <div className={styles.gameInfo}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Waves size={20} color="#0ea5e9" /> Undersea Hit
+              </h4>
+              <p>Hit the electric eel to win cash!</p>
+              
+              <div className={styles.matchStats}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Trophy size={14} color="var(--accent-gold)" /> Win: ₹1.0 / hit
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Coins size={14} /> Entry: ₹10.00
+                </span>
+              </div>
+              
+              <button 
+                onClick={() => router.push('/game/undersea-hit')}
+                className="btn btn-primary animate-pulse-glow" 
+                style={{
+                  width: '100%', 
+                  marginTop: '16px', 
+                  gap: '8px',
+                  background: 'linear-gradient(90deg, #0ea5e9, #2563eb)',
+                  boxShadow: '0 0 20px rgba(14, 165, 233, 0.3)'
+                }}
+              >
+                <Target size={18} /> PLAY UNDERSEA
               </button>
             </div>
           </div>

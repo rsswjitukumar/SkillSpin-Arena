@@ -1,0 +1,209 @@
+/* Undersea Game Style System */
+.pageContainer {
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #0a4d68 0%, #051923 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding: 20px;
+}
+
+/* Bubbles Animation */
+.bubble {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.2; }
+  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+}
+
+/* Fishes Background */
+.fish {
+  position: absolute;
+  width: 60px;
+  height: 40px;
+  pointer-events: none;
+  animation: swimRight linear infinite;
+}
+
+@keyframes swimRight {
+  0% { left: -100px; transform: scaleX(1); }
+  49% { transform: scaleX(1); }
+  50% { transform: scaleX(-1); }
+  100% { left: 110vw; transform: scaleX(-1); }
+}
+
+/* Sea Base */
+.seaBase {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(to top, rgba(139, 69, 19, 0.8), transparent);
+  z-index: 5;
+}
+
+.rockHole {
+  position: absolute;
+  bottom: 30px;
+  width: 80px;
+  height: 40px;
+  background: #1a0f0a;
+  border-radius: 50%;
+  box-shadow: inset 0 5px 15px rgba(0,0,0,0.8), 0 5px 10px rgba(0,0,0,0.5);
+  border: 2px solid #3d2b1f;
+}
+
+/* The Eel */
+.eelHead {
+  position: absolute;
+  width: 60px;
+  height: 70px;
+  background: linear-gradient(180deg, #5c4b99 0%, #3f317b 100%);
+  border-radius: 30px 30px 0 0;
+  bottom: 30px; /* Hide inside hole */
+  transition: bottom 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 10px;
+  box-shadow: 0 0 15px rgba(162, 137, 255, 0.4);
+}
+
+.eelActive {
+  bottom: 60px; /* Show head */
+}
+
+.eelActive:hover {
+  filter: brightness(1.2);
+}
+
+.eelEye {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  margin: 2px;
+  position: relative;
+  box-shadow: 0 0 8px #fcd34d;
+}
+
+.eelEye::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: black;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+}
+
+.eelMouth {
+  width: 25px;
+  height: 10px;
+  background: #1e1b4b;
+  border-radius: 0 0 15px 15px;
+  margin-top: 8px;
+}
+
+/* Electric Glow effect when clicked */
+.hitEffect {
+  animation: zap 0.2s linear;
+}
+
+@keyframes zap {
+  0% { transform: scale(1); filter: brightness(3) contrast(2); }
+  100% { transform: scale(1.1); filter: brightness(1); }
+}
+
+/* Header */
+.gameHeader {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 25px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 50;
+}
+
+.scoreLabel {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.scoreValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fcd34d;
+}
+
+.timerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.timer {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f43f5e;
+}
+
+/* Overlays */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  text-align: center;
+}
+
+.startBtn {
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #0ea5e9, #2563eb);
+  border-radius: 30px;
+  border: none;
+  color: white;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+  transition: transform 0.2s;
+}
+
+.startBtn:hover { transform: scale(1.05); }
+
+.amountInfo {
+  margin-top: 10px;
+  color: #fcd34d;
+  font-weight: 600;
+}
