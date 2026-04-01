@@ -18,10 +18,29 @@ export async function POST(request: Request) {
     const userId = payload.id as string;
 
     const body = await request.json();
-    const { password } = body;
+    const { oldPassword, password } = body;
 
-    if (!password || password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters' }, { status: 400 });
+    if (!oldPassword || !password) {
+      return NextResponse.json({ error: 'Please provide both old and new passwords' }, { status: 400 });
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json({ error: 'New password must be at least 6 characters' }, { status: 400 });
+    }
+
+    // Fetch user for current password verification
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Verify current (old) password
+    const isOldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isOldPasswordMatch) {
+      return NextResponse.json({ error: 'Old password is incorrect' }, { status: 403 });
     }
 
     // Hash the new password securely

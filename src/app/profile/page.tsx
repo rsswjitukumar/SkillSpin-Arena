@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [passwords, setPasswords] = useState({ newPassword: '', confirmPassword: '' });
+  const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
   const [isChanging, setIsChanging] = useState(false);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!passwords.newPassword || !passwords.confirmPassword) {
+    if (!passwords.oldPassword || !passwords.newPassword || !passwords.confirmPassword) {
       return toast.error('Please fill all fields');
     }
     if (passwords.newPassword !== passwords.confirmPassword) {
@@ -62,12 +62,12 @@ export default function ProfilePage() {
       const res = await fetch('/api/user/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: passwords.newPassword })
+        body: JSON.stringify({ oldPassword: passwords.oldPassword, password: passwords.newPassword })
       });
 
       if (res.ok) {
         toast.success('Password updated successfully');
-        setPasswords({ newPassword: '', confirmPassword: '' });
+        setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
       } else {
         const data = await res.json();
         toast.error(data.error || 'Failed to update password');
@@ -166,20 +166,30 @@ export default function ProfilePage() {
            <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
              <input 
                type="password" 
+               placeholder="Old Password" 
+               value={passwords.oldPassword}
+               onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+               className="input-glass"
+               style={{ padding: '12px', borderRadius: '12px' }} 
+             />
+             <input 
+               type="password" 
                placeholder="New Password" 
                value={passwords.newPassword}
                onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px', borderRadius: '8px', color: 'white', outline: 'none' }} 
+               className="input-glass"
+               style={{ padding: '12px', borderRadius: '12px' }} 
              />
              <input 
                type="password" 
                placeholder="Confirm Password" 
                value={passwords.confirmPassword}
                onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
-               style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px', borderRadius: '8px', color: 'white', outline: 'none' }} 
+               className="input-glass"
+               style={{ padding: '12px', borderRadius: '12px' }} 
              />
-             <button type="submit" disabled={isChanging} className="btn btn-primary" style={{ marginTop: '4px', padding: '12px', fontSize: '0.9rem' }}>
-               {isChanging ? 'Updating...' : 'Update Password'}
+             <button type="submit" disabled={isChanging} className="btn btn-primary" style={{ marginTop: '8px', padding: '12px', fontSize: '0.9rem' }}>
+               {isChanging ? 'UPDATING...' : 'UPDATE PASSWORD'}
              </button>
            </form>
          </div>
