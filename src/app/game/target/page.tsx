@@ -96,12 +96,11 @@ export default function TargetTap() {
 
   const moveTarget = () => {
     if (!gameAreaRef.current) return;
-    const paddingX = 40; 
-    const paddingY = 80;
-    const width = Math.max(100, gameAreaRef.current.clientWidth - paddingX * 2);
-    const height = Math.max(100, gameAreaRef.current.clientHeight - paddingY * 2);
-    const randomX = Math.floor(Math.random() * width) + paddingX;
-    const randomY = Math.floor(Math.random() * height) + paddingY;
+    const padding = 50; 
+    const width = Math.max(100, gameAreaRef.current.clientWidth - padding * 2);
+    const height = Math.max(100, gameAreaRef.current.clientHeight - padding * 2);
+    const randomX = Math.floor(Math.random() * width) + padding;
+    const randomY = Math.floor(Math.random() * height) + padding;
     setTargetPos({ top: `${randomY}px`, left: `${randomX}px` });
   };
 

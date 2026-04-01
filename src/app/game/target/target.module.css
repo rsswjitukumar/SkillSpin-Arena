@@ -103,10 +103,13 @@
   text-align: center;
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
   line-height: 1.1;
+  color: white;
 }
 
 .heroTitle span {
-  color: #ef4444;
+  background: linear-gradient(135deg, #fbbf24, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .description {
@@ -199,7 +202,7 @@
   pointer-events: none;
 }
 
-.stats Hud {
+.statsHud {
   display: flex;
   justify-content: space-between;
   padding: 15px 30px;
@@ -246,19 +249,32 @@
 .target {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 90px;
-  height: 90px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
-  background: radial-gradient(circle at center, #f87171 20%, #b91c1c 80%, #450a0a 100%);
-  border: 6px solid white;
-  box-shadow: 0 0 30px rgba(239,68,68,1), inset 0 0 15px rgba(0,0,0,0.6), 0 0 0 15px rgba(239,68,68,0.2);
+  background: radial-gradient(circle, 
+    #ffffff 0%, 
+    #3b82f6 20%, 
+    #3b82f6 40%, 
+    #facc15 40%, 
+    #facc15 70%, 
+    #ef4444 70%, 
+    #ef4444 100%
+  );
+  border: 4px solid white;
+  box-shadow: 0 0 40px rgba(239,68,68,0.6), 0 0 100px rgba(59,130,246,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: crosshair;
-  transition: none;
+  cursor: pointer;
+  transition: transform 0.05s active;
   outline: none;
   padding: 0;
+  z-index: 100;
+}
+
+.target:active {
+  transform: translate(-50%, -50%) scale(0.9);
 }
 
 .targetInner {
