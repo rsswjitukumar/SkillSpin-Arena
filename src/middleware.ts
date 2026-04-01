@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const secretStr = process.env.JWT_SECRET || 'skillspin_default_secret_key_2026';
+    const secretStr = process.env.JWT_SECRET || 'luckspin_default_secret_key_2026';
     const secret = new TextEncoder().encode(secretStr);
     
     if (!process.env.JWT_SECRET) {

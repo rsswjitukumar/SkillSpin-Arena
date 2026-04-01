@@ -102,7 +102,7 @@ export default function Login() {
       <div className={`glass-panel ${styles.authCard}`}>
         <div className={styles.brandLogo}>
           <Gamepad2 size={40} color="var(--primary-accent)" style={{ margin: '0 auto 12px' }} />
-          <h1><span className="text-gradient">SkillSpin</span> Arena</h1>
+          <h1><span className="text-gradient">LuckSpin</span> Arena</h1>
           <p className={styles.authSubtitle}>
             {isLogin ? 'Login to your account' : 'Create a new account'}
           </p>

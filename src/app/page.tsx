@@ -50,7 +50,7 @@ export default function Home() {
       {/* Header / Navbar */}
       <header className={styles.header}>
         <div className={styles.logo}>
-          <h1><span className="text-gradient">SkillSpin</span> Arena</h1>
+          <h1><span className="text-gradient">LuckSpin</span> Arena</h1>
         </div>
         
         <div className={styles.walletCard}>
@@ -70,7 +70,7 @@ export default function Home() {
             Play & <span className="text-gradient-gold">Win Real Cash</span> Every Minute!
           </h2>
           <p className={styles.heroSubtitle}>
-            Join India&apos;s #1 Skill Gaming Platform. Instant Withdrawals via UPI.
+            Join India&apos;s #1 Luck Gaming Platform. Instant Withdrawals via UPI.
           </p>
           <div className={styles.actionGroup}>
             <button className="btn btn-primary animate-pulse-glow" style={{ gap: '8px' }}>
@@ -109,7 +109,7 @@ export default function Home() {
             </div>
             <div className={styles.gameInfo}>
               <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Gamepad2 size={20} color="var(--accent-blue)" /> Skill Ludo (1v1)
+                <Gamepad2 size={20} color="var(--accent-blue)" /> Luck Ludo (1v1)
               </h4>
               <p>Fast-paced 5-minute ludo.</p>
               

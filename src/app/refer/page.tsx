@@ -42,7 +42,7 @@ export default function ReferPage() {
 
   const shareViaWhatsApp = () => {
     if (stats?.referralLink) {
-      const message = `Ready to play and win real cash? 🎮 Join SkillSpin Arena using my invite link and let's play Ludo together! 🏆\n\nPlay now: ${stats.referralLink}`;
+      const message = `Ready to play and win real cash? 🎮 Join LuckSpin Arena using my invite link and let's play Ludo together! 🏆\n\nPlay now: ${stats.referralLink}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     }
   };
@@ -73,7 +73,7 @@ export default function ReferPage() {
         </div>
         <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Get <span className="text-gradient">₹20 Rewards</span></h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: '1.5' }}>
-          Invite your friends to SkillSpin Arena. When they register using your link, you instantly get ₹10, and you get another ₹10 when they make their first recharge!
+          Invite your friends to LuckSpin Arena. When they register using your link, you instantly get ₹10, and you get another ₹10 when they make their first recharge!
         </p>
       </div>
 

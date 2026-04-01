@@ -3,8 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SkillSpin Arena | Real-Money Digital Gaming',
-  description: 'Play Skill Ludo, Spin Wheel, and fast-paced contests to win real money instantly.',
+  title: 'LuckSpin Arena | Real-Money Digital Gaming',
+  description: 'Play Luck Ludo, Spin Wheel, and fast-paced contests to win real money instantly.',
 };
 
 export default function RootLayout({
