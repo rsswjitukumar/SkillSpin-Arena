@@ -33,12 +33,12 @@ export async function POST(request: Request) {
       where: { id: userId }
     });
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    if (!user || user.password === null) {
+      return NextResponse.json({ error: 'User password not found. Please contact support.' }, { status: 404 });
     }
 
     // Verify current (old) password
-    const isOldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    const isOldPasswordMatch = await bcrypt.compare(oldPassword, user.password as string);
     if (!isOldPasswordMatch) {
       return NextResponse.json({ error: 'Old password is incorrect' }, { status: 403 });
     }
