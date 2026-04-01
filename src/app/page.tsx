@@ -100,7 +100,11 @@ export default function Home() {
         <div className="grid-cards">
           {/* Game Card 1 */}
           <div className="glass-panel">
-            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #1e3a8a, #3b82f6)'}}>
+            <div className={styles.gameBanner} style={{
+              backgroundImage: 'url("/ludo_banner.png")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}>
               <span className={styles.gameBadge}>Hot</span>
             </div>
             <div className={styles.gameInfo}>
@@ -130,7 +134,11 @@ export default function Home() {
 
           {/* Game Card 2 */}
           <div className="glass-panel">
-            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #831843, #ec4899)'}}>
+            <div className={styles.gameBanner} style={{
+              backgroundImage: 'url("/spin_banner.png")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}>
               <span className={styles.gameBadge}>New</span>
             </div>
             <div className={styles.gameInfo}>
@@ -160,7 +168,11 @@ export default function Home() {
 
           {/* Game Card 3 */}
           <div className="glass-panel">
-            <div className={styles.gameBanner} style={{background: 'linear-gradient(45deg, #064e3b, #10b981)'}}>
+            <div className={styles.gameBanner} style={{
+              backgroundImage: 'url("/target_banner.png")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}>
             </div>
             <div className={styles.gameInfo}>
               <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
