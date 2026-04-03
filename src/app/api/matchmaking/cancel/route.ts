@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       // Refund the entry fee
       await tx.user.update({
         where: { id: userId },
-        data: { walletBalance: { increment: match.entryFee } }
+        data: { depositBalance: { increment: match.entryFee } }
       });
 
       return NextResponse.json({ success: true, message: 'Match cancelled and refunded' });

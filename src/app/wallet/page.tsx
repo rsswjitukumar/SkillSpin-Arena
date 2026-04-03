@@ -31,7 +31,7 @@ export default function WalletPage() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
-          setBalance(data.user.walletBalance);
+          setBalance((data.user.depositBalance || 0) + (data.user.winningBalance || 0) + (data.user.bonusBalance || 0));
         } else {
           router.push('/login');
         }
@@ -88,6 +88,7 @@ export default function WalletPage() {
             const verifyData = await verifyRes.json();
             if (verifyData.success) {
               setBalance(prev => prev + parseFloat(addAmount));
+              setUser((prev: any) => ({ ...prev, depositBalance: (prev?.depositBalance || 0) + parseFloat(addAmount) }));
               toast.success('Cash Added Successfully to your Beast Wallet!');
             } else {
               toast.error(verifyData.error || 'Payment verification failed');
@@ -118,6 +119,7 @@ export default function WalletPage() {
         const verifyData = await verifyRes.json();
         if (verifyData.success) {
           setBalance(prev => prev + parseFloat(addAmount));
+          setUser((prev: any) => ({ ...prev, depositBalance: (prev?.depositBalance || 0) + parseFloat(addAmount) }));
           toast.success('Mock Cash Added Successfully!');
         } else {
           toast.error(verifyData.error || 'Payment failed');

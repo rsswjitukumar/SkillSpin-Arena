@@ -109,7 +109,7 @@ export default function ProfilePage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
           <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
             <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '4px' }}>Wallet Balance</div>
-            <div style={{ color: 'var(--accent-gold)', fontSize: '1.25rem', fontWeight: 'bold' }}>₹{user?.walletBalance.toFixed(2)}</div>
+            <div style={{ color: 'var(--accent-gold)', fontSize: '1.25rem', fontWeight: 'bold' }}>₹{((user?.depositBalance || 0) + (user?.winningBalance || 0) + (user?.bonusBalance || 0)).toFixed(2)}</div>
             <button onClick={() => router.push('/wallet')} className="btn btn-success" style={{ width: '100%', marginTop: '12px', padding: '8px', fontSize: '0.8rem' }}>+ Add Cash</button>
           </div>
           <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>

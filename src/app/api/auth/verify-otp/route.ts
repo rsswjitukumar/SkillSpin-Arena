@@ -51,7 +51,9 @@ export async function POST(request: Request) {
       user = await prisma.user.create({
         data: {
           phone,
-          walletBalance: 0,
+          depositBalance: 0,
+          winningBalance: 0,
+          bonusBalance: 0,
         },
       });
     }
@@ -79,7 +81,7 @@ export async function POST(request: Request) {
       user: {
         id: user.id,
         phone: user.phone,
-        balance: user.walletBalance,
+        balance: (user.depositBalance || 0) + (user.winningBalance || 0) + (user.bonusBalance || 0),
       },
       message: 'Successfully logged in'
     });

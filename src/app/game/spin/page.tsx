@@ -24,7 +24,7 @@ export default function SpinWheel() {
 
   useEffect(() => {
     fetch('/api/user/profile').then(res => res.json()).then(data => {
-      if (data.user) setBalance(data.user.walletBalance);
+      if (data.user) setBalance((data.user.depositBalance || 0) + (data.user.winningBalance || 0) + (data.user.bonusBalance || 0));
       else router.push('/login');
     });
   }, [router]);

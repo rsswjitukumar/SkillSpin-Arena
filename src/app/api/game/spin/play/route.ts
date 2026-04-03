@@ -22,7 +22,8 @@ export async function POST(request: Request) {
       const user = await tx.user.findUnique({ where: { id: userId } });
       if (!user) throw new Error('User not found');
 
-      if (user.walletBalance < betAmount) {
+      const totalBalance = (user.depositBalance || 0) + (user.winningBalance || 0) + (user.bonusBalance || 0);
+      if (totalBalance < betAmount) {
         throw new Error('Insufficient wallet balance');
       }
 
@@ -43,10 +44,20 @@ export async function POST(request: Request) {
       const profitAdjustment = winAmount - betAmount;
 
       // 2. Update Waller & Log automatically
+      // Deduct bet prioritized: Bonus -> Deposit -> Winnings
+      let remainingDeduct = betAmount;
+      const b_deduct = Math.min(user.bonusBalance, remainingDeduct);
+      remainingDeduct -= b_deduct;
+      const d_deduct = Math.min(user.depositBalance, remainingDeduct);
+      remainingDeduct -= d_deduct;
+      const w_deduct = remainingDeduct;
+
       const updatedUser = await tx.user.update({
         where: { id: userId },
         data: {
-          walletBalance: { increment: profitAdjustment },
+          bonusBalance: { decrement: b_deduct },
+          depositBalance: { decrement: d_deduct },
+          winningBalance: { decrement: w_deduct + (winAmount > 0 ? -winAmount : 0) }, // Add winAmount to winningBalance
           totalWinnings: winAmount > 0 ? { increment: winAmount } : undefined
         }
       });
@@ -66,7 +77,7 @@ export async function POST(request: Request) {
         multiplierIndex,
         multiplier,
         winAmount,
-        newBalance: updatedUser.walletBalance
+        newBalance: (updatedUser.depositBalance + updatedUser.winningBalance + updatedUser.bonusBalance)
       };
     });
 

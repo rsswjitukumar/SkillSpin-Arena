@@ -176,7 +176,7 @@ export default function AdminDashboard() {
                     <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '15px' }}>@{u.username}</td>
                       <td style={{ padding: '15px' }}>{u.phone}</td>
-                      <td style={{ padding: '15px' }}>₹{u.walletBalance.toFixed(2)}</td>
+                      <td style={{ padding: '15px' }}>₹{((u.depositBalance || 0) + (u.winningBalance || 0) + (u.bonusBalance || 0)).toFixed(2)}</td>
                       <td style={{ padding: '15px' }}>{u.role}</td>
                       <td style={{ padding: '15px' }}>
                         <button onClick={() => handleUserAction(u.id, u.role === 'BANNED' ? 'UNBLOCK' : 'BLOCK')} className="btn" style={{ fontSize: '0.7rem', padding: '5px 10px', background: u.role === 'BANNED' ? '#10b981' : '#ef4444' }}>{u.role === 'BANNED' ? 'Unblock' : 'Block'}</button>

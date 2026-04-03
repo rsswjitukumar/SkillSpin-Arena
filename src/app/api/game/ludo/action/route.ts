@@ -96,7 +96,7 @@ export async function POST(request: Request) {
            await tx.user.update({
              where: { id: state.winnerId },
              data: { 
-               walletBalance: { increment: winAmount },
+               winningBalance: { increment: winAmount },
                totalWinnings: { increment: winAmount }
              }
            });

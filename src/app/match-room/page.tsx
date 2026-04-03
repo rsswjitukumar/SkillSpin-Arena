@@ -34,7 +34,7 @@ export default function MatchRoom() {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
-          setBalance(data.user.walletBalance);
+          setBalance((data.user.depositBalance || 0) + (data.user.winningBalance || 0) + (data.user.bonusBalance || 0));
         } else {
           router.push('/login');
         }

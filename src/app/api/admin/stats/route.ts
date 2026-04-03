@@ -22,8 +22,18 @@ export async function GET(request: Request) {
       prisma.user.count(),
       prisma.match.count({ where: { status: 'PLAYING' } }),
       prisma.transaction.count({ where: { status: 'SUCCESS', type: 'DEPOSIT' } }),
-      prisma.user.aggregate({ _sum: { walletBalance: true } })
+      prisma.user.aggregate({ 
+        _sum: { 
+          depositBalance: true, 
+          winningBalance: true, 
+          bonusBalance: true 
+        } 
+      })
     ]);
+
+    const totalWealth = (platformWealthAgg._sum.depositBalance || 0) + 
+                        (platformWealthAgg._sum.winningBalance || 0) + 
+                        (platformWealthAgg._sum.bonusBalance || 0);
 
     return NextResponse.json({
       success: true,
@@ -31,7 +41,7 @@ export async function GET(request: Request) {
         totalUsers,
         activeMatches: totalMatches,
         totalDeposits: successfulDeposits,
-        totalWealth: platformWealthAgg._sum.walletBalance || 0
+        totalWealth: totalWealth
       }
     });
 

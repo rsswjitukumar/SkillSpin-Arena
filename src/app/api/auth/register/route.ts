@@ -57,7 +57,9 @@ export async function POST(request: Request) {
         username,
         referralCode: newCode,
         referredBy: validReferrer ? (validReferrer.referralCode || validReferrer.username) : null,
-        walletBalance: initialBalance
+        bonusBalance: initialBalance,
+        depositBalance: 0,
+        winningBalance: 0
       }
     });
 
@@ -67,7 +69,7 @@ export async function POST(request: Request) {
         prisma.user.update({
           where: { id: validReferrer.id },
           data: {
-            walletBalance: { increment: 50 },
+            bonusBalance: { increment: 50 },
             referralEarnings: { increment: 50 }
           }
         }),
@@ -115,7 +117,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      user: { id: user.id, username: user.username, phone: user.phone, balance: user.walletBalance },
+      user: { 
+        id: user.id, 
+        username: user.username, 
+        phone: user.phone, 
+        balance: (user.depositBalance || 0) + (user.winningBalance || 0) + (user.bonusBalance || 0) 
+      },
       message: 'Registration successful'
     });
   } catch (error) {

@@ -21,7 +21,8 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    if (user.walletBalance < entryFee) {
+    const totalBalance = (user.depositBalance || 0) + (user.winningBalance || 0) + (user.bonusBalance || 0);
+    if (totalBalance < entryFee) {
       return NextResponse.json({ error: 'Insufficient wallet balance' }, { status: 402 });
     }
 
@@ -75,10 +76,25 @@ export async function POST(request: Request) {
           include: { player1: { select: { username: true, name: true } } }
         });
 
-        // Deduct balance from player 2 (player 1 already deducted when creating)
+        // Deduct balance from player 2 (player 1 already deducted when creating) using prioritized logic
+        let amountToDeduct = parseFloat(entryFee);
+        const bB = user.bonusBalance || 0;
+        const dB = user.depositBalance || 0;
+        const wB = user.winningBalance || 0;
+
+        const fromBonus = Math.min(bB, amountToDeduct);
+        amountToDeduct -= fromBonus;
+        const fromDeposit = Math.min(dB, amountToDeduct);
+        amountToDeduct -= fromDeposit;
+        const fromWinning = Math.min(wB, amountToDeduct);
+
         await tx.user.update({
           where: { id: userId },
-          data: { walletBalance: { decrement: parseFloat(entryFee) } }
+          data: {
+            bonusBalance: { decrement: fromBonus },
+            depositBalance: { decrement: fromDeposit },
+            winningBalance: { decrement: fromWinning }
+          }
         });
 
         return NextResponse.json({ success: true, match: joinedMatch });
@@ -92,10 +108,25 @@ export async function POST(request: Request) {
           }
         });
 
-        // Deduct balance from player 1
+        // Deduct balance from player 1 using prioritized logic
+        let amountToDeduct = parseFloat(entryFee);
+        const bB = user.bonusBalance || 0;
+        const dB = user.depositBalance || 0;
+        const wB = user.winningBalance || 0;
+
+        const fromBonus = Math.min(bB, amountToDeduct);
+        amountToDeduct -= fromBonus;
+        const fromDeposit = Math.min(dB, amountToDeduct);
+        amountToDeduct -= fromDeposit;
+        const fromWinning = Math.min(wB, amountToDeduct);
+
         await tx.user.update({
           where: { id: userId },
-          data: { walletBalance: { decrement: parseFloat(entryFee) } }
+          data: {
+            bonusBalance: { decrement: fromBonus },
+            depositBalance: { decrement: fromDeposit },
+            winningBalance: { decrement: fromWinning }
+          }
         });
 
         return NextResponse.json({ success: true, match: newMatch });
