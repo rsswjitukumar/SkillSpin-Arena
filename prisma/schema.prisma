@@ -16,7 +16,7 @@ model User {
   role          String   @default("USER")
   depositBalance  Float    @default(0.0)
   winningBalance  Float    @default(0.0)
-  bonusBalance    @default(0.0)
+  bonusBalance    Float    @default(0.0)
   totalWinnings   Float    @default(0.0)
   referredBy      String?
   referralCode    String?  @unique
