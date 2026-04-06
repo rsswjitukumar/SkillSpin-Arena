@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-neon": "^6.2.1",
     "@prisma/client": "^6.2.1",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
     "jose": "^6.2.1",
     "lucide-react": "^0.577.0",
     "next": "15.5.14",
@@ -27,6 +29,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.14",
     "prisma": "^6.2.1",
+    "tsx": "^4.19.2",
     "typescript": "5.9.3"
   }
 }
