@@ -23,6 +23,13 @@ export default function UnderseaEelHit() {
   const [gameState, setGameState] = useState<'IDLE' | 'PLAYING' | 'FINISHED'>('IDLE');
   const [activeHole, setActiveHole] = useState<number | null>(null);
   const [isHit, setIsHit] = useState(false);
+  const [bgIndex, setBgIndex] = useState(0);
+
+  const backgrounds = [
+    'https://images.unsplash.com/photo-1544551763-47a0159f963f?auto=format&fit=crop&q=80&w=1920',
+    'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&q=80&w=1920',
+    'https://images.unsplash.com/photo-1468436139062-f60a71c5c892?auto=format&fit=crop&q=80&w=1920'
+  ];
   
   const gameTimerRef = useRef<NodeJS.Timeout | null>(null);
   const eelTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -87,6 +94,14 @@ export default function UnderseaEelHit() {
     }
   };
 
+  // Background switcher effect
+  useEffect(() => {
+    const bgTimer = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % backgrounds.length);
+    }, 8000); // Change image every 8 seconds
+    return () => clearInterval(bgTimer);
+  }, [backgrounds.length]);
+
   // Cleanup
   useEffect(() => {
     return () => {
@@ -97,6 +112,16 @@ export default function UnderseaEelHit() {
 
   return (
     <div className={styles.pageContainer}>
+      {/* Dynamic Backgrounds */}
+      {backgrounds.map((bg, idx) => (
+        <div 
+          key={bg}
+          className={`${styles.bgLayer} ${bgIndex === idx ? styles.activeBg : ''}`}
+          style={{ backgroundImage: `url(${bg})` }}
+        />
+      ))}
+      <div className={styles.overlayColor} />
+      
       {/* Background Fish Animations */}
       <div className={styles.fish} style={{ top: '20%', animationDuration: '25s' }}>
         <FishSVG color="#ff5733" />
@@ -125,7 +150,11 @@ export default function UnderseaEelHit() {
 
       {/* Game UI Header */}
       <div className={styles.gameHeader}>
-        <button onClick={() => router.push('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}>
+        <button 
+          onClick={() => router.push('/')} 
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}
+          title="Back to Dashboard"
+        >
           <ArrowLeft size={24} />
         </button>
         
